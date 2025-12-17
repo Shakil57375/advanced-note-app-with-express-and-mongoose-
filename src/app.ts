@@ -4,8 +4,39 @@ import mongoose, { Schema } from 'mongoose';
 const app: Application = express();
 
 const noteSchema = new Schema({
-  title: String,
-  content: String,
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  content: {
+    type: String,
+    default: '',
+  },
+  category: {
+    type: String,
+    enum: ['', 'personal', 'work', 'others'],
+    default: 'personal',
+    trim: true,
+  },
+  pinned: {
+    type: Boolean,
+    default: false,
+  },
+  tags : {
+    level : {
+      type: String,
+      enum: ['', 'low', 'medium', 'high'],
+      default: 'low',
+      required: true,
+      trim: true,
+    },
+    color: {
+      type: String,
+      enum: ['', 'red', 'blue', 'green'],
+      default: 'gray',
+    }
+  },
   isCompleted: Boolean,
   publishedAt: Date, // Add the publishedAt field
 });
@@ -13,10 +44,11 @@ const noteSchema = new Schema({
 const Note = mongoose.model('Note', noteSchema);
 app.post('/create-note', async (req: Request, res: Response) => {
   const myNote = new Note({
-    title: 'Sample Note',
-    content: 'This is a sample note.',
-    isCompleted: false,
-    publishedAt: new Date(), // Add the publishedAt field
+    title: 'Learning Express',
+    tags : {
+      level : 'high',
+    }
+    
   });
   res.status(201).json({
     success: true,
