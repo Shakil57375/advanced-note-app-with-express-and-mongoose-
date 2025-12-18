@@ -91,6 +91,51 @@ app.post('/note/create-note', async (req: Request, res: Response) => {
   // res.status(201).json(note);
 });
 
+// get all notes
+app.get('/note/get-all-notes', async (req: Request, res: Response) => {
+  try {
+    const notes = await Note.find();
+    res.status(200).json({
+      success: true,
+      message: 'Notes fetched successfully',
+      notes,
+    });
+  } catch (error: any) {
+    console.error('Error fetching notes:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch notes',
+      error: error.message,
+    });
+  }
+});
+
+// get a single note by ID
+app.get('/note/get-note/:id', async (req: Request, res: Response) => {
+  try {
+    const note = await Note.findById(req.params.id);
+    if (!note) {
+      return res.status(404).json({
+        success: false,
+        message: 'Note not found',
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Note fetched successfully',
+      note,
+    });
+  } catch (error: any) {
+    console.error('Error fetching note:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch note',
+      error: error.message,
+    });
+  }
+});
+
+
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
